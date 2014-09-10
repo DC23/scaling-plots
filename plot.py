@@ -238,7 +238,7 @@ def plot_efficiency(
     ax = fig.add_subplot(111)
 
     # define the sizes and locations of things
-    x_ticks = copy.deepcopy(compute_elements)
+    x_ticks = copy.deepcopy(list(compute_elements))
     x_ticks.append(xmax)
     plot_left = x_ticks[0]
     plot_right = x_ticks[-1]
@@ -290,6 +290,11 @@ if __name__ == '__main__':
     # show_instead_of_save = False
     show_instead_of_save = True
 
+    # some values that should be inputs to this file
+    plot_titles = { 'walltime':'ODPS - Walltime', 'speedup':'ODPS - Speedup', 'efficiency':'ODPS - Strong Scaling Efficiency'}
+    compute_element_name = 'Threads'
+    walltime_units = 'Seconds'
+
     # CSIRO colours
     colours = [
         '#00a9ce',  # midday blue
@@ -334,7 +339,7 @@ if __name__ == '__main__':
         data['efficiency'] = efficiency
 
     # extract the compute element names for grouping and labelling the charts
-    compute_elements = np.sort(results.compute_elements.unique()).tolist()
+    compute_elements = np.sort(results.compute_elements.unique())
 
     # build the collections of values for the charts
     walltimes = []
@@ -353,20 +358,20 @@ if __name__ == '__main__':
 
     # finally make the plots
 
-    plot_walltime(
-        walltimes,
-        colours,
-        series_names,
-        compute_elements,
-        ymax=max_walltime + 50,
-        group_width=0.83,
-        plot_size=plot_size,
-        title='ODPS Walltime',
-        xlabel='Threads',
-        ylabel='Seconds',
-        show=show_instead_of_save,
-        file_name='odps-walltime',
-        file_extension='png')
+    # plot_walltime(
+        # walltimes,
+        # colours,
+        # series_names,
+        # compute_elements,
+        # ymax=max_walltime + 50,
+        # group_width=0.83,
+        # plot_size=plot_size,
+        # title='ODPS Walltime',
+        # xlabel=compute_element_name,
+        # ylabel=walltime_units,
+        # show=show_instead_of_save,
+        # file_name='odps-walltime',
+        # file_extension='png')
 
     plot_efficiency(
         efficiencies,
@@ -374,10 +379,11 @@ if __name__ == '__main__':
         series_names,
         compute_elements,
         line_width=1.5,
-        xmax=140,
+        xmax=compute_elements.max() * 1.1,
         ymax=1.3,
         plot_size=plot_size,
-        title='ODPS - Strong Scaling Efficiency',
+        xlabel=compute_element_name,
+        title=plot_titles['efficiency'],
         show=show_instead_of_save,
         file_name='odps-efficiency',
         file_extension='png')
@@ -394,32 +400,4 @@ if __name__ == '__main__':
         # title='Gridded Calibration - Strong Scaling Speedup',
         # show=show_instead_of_save,
         # file_name='speedup',
-        # file_extension='png')
-
-    # plot_efficiency(
-        # efficiencies_it,
-        # colours,
-        # series_names,
-        # compute_elements,
-        # line_width=1.5,
-        # xmax=140,
-        # ymax=1.5,
-        # plot_size=plot_size,
-        # title='Gridded Calibration - Strong Scaling Efficiency - Model Calculations',
-        # show=show_instead_of_save,
-        # file_name='efficiency_iterations',
-        # file_extension='png')
-
-    # plot_speedup(
-        # speedups_it,
-        # colours,
-        # series_names,
-        # compute_elements,
-        # line_width=1.5,
-        # xmax=140,
-        # ymax=175,
-        # plot_size=plot_size,
-        # title='Gridded Calibration - Strong Scaling Speedup - Model Calculations',
-        # show=show_instead_of_save,
-        # file_name='speedup_iterations',
         # file_extension='png')
