@@ -330,7 +330,7 @@ if __name__ == '__main__':
 
     # create plots in a 4:3 aspect ratio
     # matplotlib works in inches
-    plot_width = 10
+    plot_width = args.plot_width
     plot_size = (plot_width, plot_width * 3 / 4)
 
     show_instead_of_save = args.window
