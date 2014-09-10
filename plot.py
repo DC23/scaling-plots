@@ -289,8 +289,14 @@ if __name__ == '__main__':
     show_instead_of_save = True
 
     # some values that should be inputs to this file
-    plot_titles = { 'walltime':'ODPS - Walltime', 'speedup':'ODPS - Speedup', 'efficiency':'ODPS - Strong Scaling Efficiency'}
-    filenames = { 'walltime':'odps-walltime', 'speedup':'odps-speedup', 'efficiency':'odps-efficiency'}
+    plot_titles = {
+        'walltime': 'ODPS - Walltime',
+        'speedup': 'ODPS - Speedup',
+        'efficiency': 'ODPS - Strong Scaling Efficiency'}
+    filenames = {
+        'walltime': 'odps-walltime',
+        'speedup': 'odps-speedup',
+        'efficiency': 'odps-efficiency'}
     compute_element_name = 'Threads'
     walltime_units = 'Seconds'
 
@@ -324,7 +330,9 @@ if __name__ == '__main__':
     for group in groups:
         df = results[(results.group == group)]
         if len(df):
-            group_dataframes[group] = df.sort('compute_elements', ascending=True)
+            group_dataframes[group] = df.sort(
+                'compute_elements',
+                ascending=True)
 
     # calculate speedup and efficiency based on the total walltime, and on
     # the average time per iteration (which excludes a lot of the serial
