@@ -340,18 +340,14 @@ if __name__ == '__main__':
     walltimes = []
     efficiencies = []
     speedups = []
-    efficiencies_it = []
-    speedups_it = []
     series_names = []
     max_walltime = 0
     for name, data in group_dataframes.items():
-        walltimes.append(data['walltime_minutes'])
-        efficiencies.append(data['efficiency'])
-        speedups.append(data['speedup'])
-        efficiencies_it.append(data.efficiency_it)
-        speedups_it.append(data.speedup_it)
+        walltimes.append(data.walltime)
+        efficiencies.append(data.efficiency)
+        speedups.append(data.speedup)
         series_names.append(name)
-        local_max_walltime = max(data.walltime_minutes)
+        local_max_walltime = max(data.walltime)
         if local_max_walltime > max_walltime:
             max_walltime = local_max_walltime
 
@@ -365,26 +361,26 @@ if __name__ == '__main__':
         ymax=max_walltime + 50,
         group_width=0.83,
         plot_size=plot_size,
-        title='Gridded Calibration Walltimes',
-        ylabel='Minutes (log scale)',
+        title='ODPS Walltime',
+        xlabel='Threads',
+        ylabel='Seconds',
         show=show_instead_of_save,
-        y_log_scale = True,
-        file_name='walltime_log',
+        file_name='odps-walltime',
         file_extension='png')
 
-    # plot_efficiency(
-        # efficiencies,
-        # colours,
-        # series_names,
-        # compute_elements,
-        # line_width=1.5,
-        # xmax=140,
-        # ymax=1.3,
-        # plot_size=plot_size,
-        # title='Gridded Calibration - Strong Scaling Efficiency',
-        # show=show_instead_of_save,
-        # file_name='efficiency',
-        # file_extension='png')
+    plot_efficiency(
+        efficiencies,
+        colours,
+        series_names,
+        compute_elements,
+        line_width=1.5,
+        xmax=140,
+        ymax=1.3,
+        plot_size=plot_size,
+        title='ODPS - Strong Scaling Efficiency',
+        show=show_instead_of_save,
+        file_name='odps-efficiency',
+        file_extension='png')
 
     # plot_speedup(
         # speedups,
