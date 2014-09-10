@@ -39,6 +39,11 @@ def get_args():
         default=10,
         type=int,
         help="Plot width in inches")
+    parser.add_argument(
+        "--speedup_max",
+        default=16.1,
+        type=float,
+        help="Max Y axis scale for speedup")
 
     return parser.parse_args()
 
@@ -419,7 +424,7 @@ if __name__ == '__main__':
         colours,
         series_names,
         compute_elements,
-        ymax=max_walltime + 50,
+        ymax=max_walltime * 1.2,
         group_width=0.83,
         plot_size=plot_size,
         title=walltime_title,
@@ -450,8 +455,8 @@ if __name__ == '__main__':
         series_names,
         compute_elements,
         line_width=1.5,
-        xmax=compute_elements.max() * 1.1,
-        ymax=compute_elements.max() * 1.2,
+        xmax=compute_elements.max() * 1.05,
+        ymax=args.speedup_max,
         plot_size=plot_size,
         xlabel=compute_element_name,
         title=speedup_title,
