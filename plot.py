@@ -320,8 +320,7 @@ if __name__ == '__main__':
     for group in groups:
         df = results[(results.group == group)]
         if len(df):
-            df.sort('compute_elements', ascending=True)
-            group_dataframes[group] = df
+            group_dataframes[group] = df.sort('compute_elements', ascending=True)
 
     # calculate speedup and efficiency based on the total walltime, and on
     # the average time per iteration (which excludes a lot of the serial
@@ -335,12 +334,7 @@ if __name__ == '__main__':
         data['efficiency'] = efficiency
 
     # extract the compute element names for grouping and labelling the charts
-    # compute_elements = list(
-        # group_dataframes[list(group_dataframes.keys())[0]]['compute_elements'])
-    compute_elements = results.compute_elements.unique()
-    # compute_elements = results.compute_elements.unique().sort()
-    print(compute_elements)
-    sys.exit()
+    compute_elements = np.sort(results.compute_elements.unique()).tolist()
 
     # build the collections of values for the charts
     walltimes = []
