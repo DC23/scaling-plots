@@ -1,5 +1,5 @@
 #!/bin/python
-
+import sys
 import os
 import copy
 import pandas as pd
@@ -287,8 +287,8 @@ if __name__ == '__main__':
     plot_width = 10
     plot_size = (plot_width, plot_width * 3 / 4)
 
-    show_instead_of_save = False
-    # show_instead_of_save = True
+    # show_instead_of_save = False
+    show_instead_of_save = True
 
     # CSIRO colours
     colours = [
@@ -304,40 +304,24 @@ if __name__ == '__main__':
     ]
 
     results = read_dataframe_from_excel(
-        'results.xlsx',
+        'results.xls',
         worksheet='results',
         usecols=[
-            'tag',
-            'gc',
-            'workers',
-            'catchments',
-            'cells',
-            'avg_time_per_iteration',
-            'walltime_minutes'])
+            'group',
+            'compute_elements',
+            'walltime'])
 
     # I don't know an equivalent to R's completecases, but this works for now
-    results = results[results['tag'].notnull()]
+    results = results[results['group'].notnull() & (results.walltime > 0)]
 
     # create new dataframes for each group of results
-    # by querying the main results
-    tags = ['baseline']
-    gcs = ['sgen', 'boehm']
-    catchments = [11, 21]
+    groups = results.group.unique()
     group_dataframes = {}
-    for tag in tags:
-        for gc in gcs:
-            for catchment in catchments:
-                df = results[
-                    (results.tag == tag) &
-                    (results.gc == gc) &
-                    (results.catchments == catchment) &
-                    (results.walltime_minutes > 0)]
-                if len(df):
-                    df.sort('workers', ascending=True)
-                    # each result group should have the same cell count
-                    assert(min(df.cells) == max(df.cells))
-                    name = '{} {} - {} cells'.format(tag, gc, df.cells.iloc[0])
-                    group_dataframes[name] = df
+    for group in groups:
+        df = results[(results.group == group)]
+        if len(df):
+            df.sort('compute_elements', ascending=True)
+            group_dataframes[group] = df
 
     # calculate speedup and efficiency based on the total walltime, and on
     # the average time per iteration (which excludes a lot of the serial
@@ -345,21 +329,18 @@ if __name__ == '__main__':
     for data in group_dataframes.values():
         speedup, efficiency = calculate_speedup_and_efficiency(
             data,
-            'workers',
-            'walltime_minutes')
+            'compute_elements',
+            'walltime')
         data['speedup'] = speedup
         data['efficiency'] = efficiency
 
-        speedup, efficiency = calculate_speedup_and_efficiency(
-            data,
-            'workers',
-            'avg_time_per_iteration')
-        data['speedup_it'] = speedup
-        data['efficiency_it'] = efficiency
-
     # extract the compute element names for grouping and labelling the charts
-    compute_elements = list(
-        group_dataframes[list(group_dataframes.keys())[0]]['workers'])
+    # compute_elements = list(
+        # group_dataframes[list(group_dataframes.keys())[0]]['compute_elements'])
+    compute_elements = results.compute_elements.unique()
+    # compute_elements = results.compute_elements.unique().sort()
+    print(compute_elements)
+    sys.exit()
 
     # build the collections of values for the charts
     walltimes = []
