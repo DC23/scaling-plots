@@ -175,7 +175,7 @@ def plot_speedup(
     ax = fig.add_subplot(111)
 
     # define the sizes and locations of things
-    x_ticks = copy.deepcopy(compute_elements)
+    x_ticks = list(compute_elements)
     x_ticks.append(xmax)
     plot_left = x_ticks[0]
     plot_right = x_ticks[-1]
@@ -238,7 +238,7 @@ def plot_efficiency(
     ax = fig.add_subplot(111)
 
     # define the sizes and locations of things
-    x_ticks = copy.deepcopy(list(compute_elements))
+    x_ticks = list(compute_elements)
     x_ticks.append(xmax)
     plot_left = x_ticks[0]
     plot_right = x_ticks[-1]
@@ -292,6 +292,7 @@ if __name__ == '__main__':
 
     # some values that should be inputs to this file
     plot_titles = { 'walltime':'ODPS - Walltime', 'speedup':'ODPS - Speedup', 'efficiency':'ODPS - Strong Scaling Efficiency'}
+    filenames = { 'walltime':'odps-walltime', 'speedup':'odps-speedup', 'efficiency':'odps-efficiency'}
     compute_element_name = 'Threads'
     walltime_units = 'Seconds'
 
@@ -358,20 +359,20 @@ if __name__ == '__main__':
 
     # finally make the plots
 
-    # plot_walltime(
-        # walltimes,
-        # colours,
-        # series_names,
-        # compute_elements,
-        # ymax=max_walltime + 50,
-        # group_width=0.83,
-        # plot_size=plot_size,
-        # title='ODPS Walltime',
-        # xlabel=compute_element_name,
-        # ylabel=walltime_units,
-        # show=show_instead_of_save,
-        # file_name='odps-walltime',
-        # file_extension='png')
+    plot_walltime(
+        walltimes,
+        colours,
+        series_names,
+        compute_elements,
+        ymax=max_walltime + 50,
+        group_width=0.83,
+        plot_size=plot_size,
+        title='ODPS Walltime',
+        xlabel=compute_element_name,
+        ylabel=walltime_units,
+        show=show_instead_of_save,
+        file_name=filenames['walltime'],
+        file_extension='png')
 
     plot_efficiency(
         efficiencies,
@@ -385,19 +386,20 @@ if __name__ == '__main__':
         xlabel=compute_element_name,
         title=plot_titles['efficiency'],
         show=show_instead_of_save,
-        file_name='odps-efficiency',
+        file_name=filenames['efficiency'],
         file_extension='png')
 
-    # plot_speedup(
-        # speedups,
-        # colours,
-        # series_names,
-        # compute_elements,
-        # line_width=1.5,
-        # xmax=140,
-        # ymax=140,
-        # plot_size=plot_size,
-        # title='Gridded Calibration - Strong Scaling Speedup',
-        # show=show_instead_of_save,
-        # file_name='speedup',
-        # file_extension='png')
+    plot_speedup(
+        speedups,
+        colours,
+        series_names,
+        compute_elements,
+        line_width=1.5,
+        xmax=compute_elements.max() * 1.1,
+        ymax=compute_elements.max() * 1.2,
+        plot_size=plot_size,
+        xlabel=compute_element_name,
+        title=plot_titles['speedup'],
+        show=show_instead_of_save,
+        file_name=filenames['speedup'],
+        file_extension='png')
