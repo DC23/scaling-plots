@@ -1,8 +1,46 @@
 #!/bin/python
 import os
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
+
+
+def get_args():
+    """Gets the command line arguments"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("results_file", help="The input results spreadsheet")
+    parser.add_argument(
+        "--window",
+        default=False,
+        help="prints plots to a window instead of to files",
+        action="store_true")
+    parser.add_argument(
+        "--title_prefix",
+        type=str,
+        help="optional prefix that will be appended to the standard plot titles")
+    parser.add_argument(
+        "--file_prefix",
+        type=str,
+        help="optional prefix that will be appended to the standard file names")
+    parser.add_argument(
+        "--compute_element_name",
+        type=str,
+        default="Threads",
+        help="Compute element name that will be used on plot labels")
+    parser.add_argument(
+        "--walltime_units",
+        default="Minutes",
+        type=str,
+        help="Walltime units name")
+    parser.add_argument(
+        "--plot_width",
+        default=10,
+        type=int,
+        help="Plot width in inches")
+
+    return parser.parse_args()
 
 
 def save(path, ext='png', close=True, verbose=True):
@@ -278,27 +316,38 @@ def plot_efficiency(
         save(file_name, file_extension, close=True, verbose=True)
 
 
+def add_optional_prefix(base_string, prefix, separator):
+    result = str(base_string)
+    if prefix:
+        result = prefix + separator + base_string
+    return result
+
+
 if __name__ == '__main__':
+
+    # get and process the arguments
+    args = get_args()
 
     # create plots in a 4:3 aspect ratio
     # matplotlib works in inches
     plot_width = 10
     plot_size = (plot_width, plot_width * 3 / 4)
 
-    # show_instead_of_save = False
-    show_instead_of_save = True
+    show_instead_of_save = args.window
 
-    # some values that should be inputs to this file
-    plot_titles = {
-        'walltime': 'ODPS - Walltime',
-        'speedup': 'ODPS - Speedup',
-        'efficiency': 'ODPS - Strong Scaling Efficiency'}
-    filenames = {
-        'walltime': 'odps-walltime',
-        'speedup': 'odps-speedup',
-        'efficiency': 'odps-efficiency'}
-    compute_element_name = 'Threads'
-    walltime_units = 'Seconds'
+    walltime_title = add_optional_prefix('Walltime', args.title_prefix, ' - ')
+    speedup_title = add_optional_prefix('Speedup', args.title_prefix, ' - ')
+    efficiency_title = add_optional_prefix(
+        'Strong Scaling Efficiency',
+        args.title_prefix,
+        ' - ')
+
+    walltime_file = add_optional_prefix('walltime', args.file_prefix, '-')
+    speedup_file = add_optional_prefix('speedup', args.file_prefix, '-')
+    efficiency_file = add_optional_prefix('efficiency', args.file_prefix, '-')
+
+    compute_element_name = args.compute_element_name
+    walltime_units = args.walltime_units
 
     # CSIRO colours
     colours = [
@@ -314,7 +363,7 @@ if __name__ == '__main__':
     ]
 
     results = read_dataframe_from_excel(
-        'results.xls',
+        args.results_file,
         worksheet='results',
         usecols=[
             'group',
@@ -373,11 +422,11 @@ if __name__ == '__main__':
         ymax=max_walltime + 50,
         group_width=0.83,
         plot_size=plot_size,
-        title='ODPS Walltime',
+        title=walltime_title,
         xlabel=compute_element_name,
         ylabel=walltime_units,
         show=show_instead_of_save,
-        file_name=filenames['walltime'],
+        file_name=walltime_file,
         file_extension='png')
 
     plot_efficiency(
@@ -390,9 +439,9 @@ if __name__ == '__main__':
         ymax=1.3,
         plot_size=plot_size,
         xlabel=compute_element_name,
-        title=plot_titles['efficiency'],
+        title=efficiency_title,
         show=show_instead_of_save,
-        file_name=filenames['efficiency'],
+        file_name=efficiency_file,
         file_extension='png')
 
     plot_speedup(
@@ -405,7 +454,7 @@ if __name__ == '__main__':
         ymax=compute_elements.max() * 1.2,
         plot_size=plot_size,
         xlabel=compute_element_name,
-        title=plot_titles['speedup'],
+        title=speedup_title,
         show=show_instead_of_save,
-        file_name=filenames['speedup'],
+        file_name=speedup_file,
         file_extension='png')
