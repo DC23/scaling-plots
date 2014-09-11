@@ -399,7 +399,6 @@ if __name__ == '__main__':
 
     # apply the optional filter column
     if args.filter_column:
-        print("here")
         results = results[results[args.filter_column] > 0]
 
     # create new dataframes for each group of results
