@@ -30,6 +30,13 @@ def get_args():
         type=str,
         help="Walltime units name")
     parser.add_argument(
+        "--filter_column",
+        default="",
+        type=str,
+        help="""Optional filter column name. If given, the column contents will
+        be equated to a boolean value. Any result group with a member filter
+        that equates to False will be excluded from the plot.""")
+    parser.add_argument(
         "--title_prefix",
         type=str,
         help="optional prefix that will be prepended to the standard plot titles")
@@ -375,16 +382,25 @@ if __name__ == '__main__':
         '#1E22AA',  # blueberry
     ]
 
+    usecols = [
+        'group',
+        'compute_elements',
+        'walltime']
+    if args.filter_column:
+        usecols.append(args.filter_column)
+
     results = read_dataframe_from_excel(
         args.results_file,
         worksheet=args.worksheet_name,
-        usecols=[
-            'group',
-            'compute_elements',
-            'walltime'])
+        usecols=usecols)
 
-    # I don't know an equivalent to R's completecases, but this works for now
+    # filter out incomplete results
     results = results[results.group.notnull() & (results.walltime > 0)]
+
+    # apply the optional filter column
+    if args.filter_column:
+        print("here")
+        results = results[results[args.filter_column] > 0]
 
     # create new dataframes for each group of results
     groups = results.group.unique()
