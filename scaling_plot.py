@@ -9,21 +9,16 @@ import argparse
 
 def get_args():
     """Gets the command line arguments"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("results_file", help="The input results spreadsheet")
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        "--window",
-        default=False,
-        help="prints plots to a window instead of to files",
-        action="store_true")
+        "results_file",
+        help="The input results spreadsheet")
     parser.add_argument(
-        "--title_prefix",
+        "--worksheet_name",
         type=str,
-        help="optional prefix that will be appended to the standard plot titles")
-    parser.add_argument(
-        "--file_prefix",
-        type=str,
-        help="optional prefix that will be appended to the standard file names")
+        default="results",
+        help="Worksheet containing the results to plot")
     parser.add_argument(
         "--compute_element_name",
         type=str,
@@ -34,6 +29,19 @@ def get_args():
         default="Minutes",
         type=str,
         help="Walltime units name")
+    parser.add_argument(
+        "--title_prefix",
+        type=str,
+        help="optional prefix that will be prepended to the standard plot titles")
+    parser.add_argument(
+        "--file_prefix",
+        type=str,
+        help="optional prefix that will be prepended to the standard file names")
+    parser.add_argument(
+        "--window",
+        default=False,
+        help="prints plots to a window instead of to files",
+        action="store_true")
     parser.add_argument(
         "--plot_width",
         default=10,
@@ -369,14 +377,14 @@ if __name__ == '__main__':
 
     results = read_dataframe_from_excel(
         args.results_file,
-        worksheet='results',
+        worksheet=args.worksheet_name,
         usecols=[
             'group',
             'compute_elements',
             'walltime'])
 
     # I don't know an equivalent to R's completecases, but this works for now
-    results = results[results['group'].notnull() & (results.walltime > 0)]
+    results = results[results.group.notnull() & (results.walltime > 0)]
 
     # create new dataframes for each group of results
     groups = results.group.unique()
