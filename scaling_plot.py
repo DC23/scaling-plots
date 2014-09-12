@@ -372,11 +372,11 @@ if __name__ == '__main__':
     # CSIRO colours
     colours = [
         '#00a9ce',  # midday blue
-        '#00616c',  # midnight blue
         '#78be20',  # light forest
         '#DF1995',  # fuschia
         '#E87722',  # orange
         '#E4002B',  # vermillion
+        '#00616c',  # midnight blue
         '#FFB81C',  # gold
         '#6D2077',  # plum
         '#1E22AA',  # blueberry
