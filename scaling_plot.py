@@ -401,6 +401,10 @@ if __name__ == '__main__':
     if args.filter_column:
         results = results[results[args.filter_column] > 0]
 
+    # if there are multiple times for each (group,compute_element) tuple,
+    # calculate the mean
+    results = results.groupby(['group','compute_elements']).mean().reset_index()
+
     # create new dataframes for each group of results
     groups = results.group.unique()
     group_dataframes = {}
