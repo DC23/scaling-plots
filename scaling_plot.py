@@ -13,63 +13,63 @@ def get_args():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        "results_file",
-        help="The input results spreadsheet")
+        'results_file',
+        help='The input results spreadsheet')
     parser.add_argument(
-        "--worksheet_name",
+        '--worksheet_name',
         type=str,
-        default="results",
-        help="Worksheet containing the results to plot")
+        default='results',
+        help='Worksheet containing the results to plot')
     parser.add_argument(
-        "--compute_element_name",
+        '--compute_element_name',
         type=str,
-        default="Threads",
-        help="Compute element name that will be used on plot labels")
+        default='Threads',
+        help='Compute element name that will be used on plot labels')
     parser.add_argument(
-        "--walltime_units",
-        default="Minutes",
+        '--walltime_units',
+        default='Minutes',
         type=str,
-        help="Walltime units name")
+        help='Walltime units name')
     parser.add_argument(
-        "--filter_column",
-        default="",
+        '--filter_column',
+        default='',
         type=str,
-        help="""Optional filter column name. If given, the column contents will
+        help='''Optional filter column name. If given, the column contents will
         be equated to a boolean value. Any result group with a member filter
-        that equates to False will be excluded from the plot.""")
+        that equates to False will be excluded from the plot.''')
     parser.add_argument(
-        "--title_prefix",
+        '--title_prefix',
         type=str,
-        help="optional prefix that will be prepended to the standard plot titles")
+        help='optional prefix that will be prepended to the standard plot titles')
     parser.add_argument(
-        "--file_prefix",
+        '--file_prefix',
         type=str,
-        help="optional prefix that will be prepended to the standard file names")
+        help='optional prefix that will be prepended to the standard file names')
     parser.add_argument(
-        "--window",
+        '--window',
         default=False,
-        help="prints plots to a window instead of to files",
-        action="store_true")
+        help='prints plots to a window instead of to files',
+        action='store_true')
     parser.add_argument(
-        "--plot_width",
+        '--plot_width',
         default=10,
         type=int,
-        help="Plot width in inches")
+        help='Plot width in inches')
     parser.add_argument(
-        "--speedup_max",
+        '--speedup_max',
         default=16.1,
         type=float,
-        help="Max Y axis scale for speedup")
+        help='Max Y axis scale for speedup')
     parser.add_argument(
-        "--weak",
+        '--weak',
         default=False,
-        help="Generate plots for weak scaling instead of strong scaling",
-        action="store_true")
+        help='Generate plots for weak scaling instead of strong scaling',
+        action='store_true')
     parser.add_argument(
-        "--style",
-        default="",
+        '--style',
+        default='',
         type=str,
-        help="If available, use one of the matplotlib predefined styles")
+        help='If available, use one of the matplotlib predefined styles')
 
     return parser.parse_args()
 
@@ -383,7 +383,6 @@ if __name__ == '__main__':
     speedup_title = add_optional_prefix('Speedup', args.title_prefix, ' - ')
 
     efficiency_title = add_optional_prefix(
-        # 'Weak Scaling Efficiency' if args.weak else 'Strong Scaling Efficiency',
         'Efficiency',
         args.title_prefix,
         ' - ')
