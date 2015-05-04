@@ -1,0 +1,2 @@
+#!/bin/bash
+../scaling_plot.py ./results.xls --title_prefix "Strong Scaling" --file_prefix "strong" --compute_element_name "threads" --worksheet_name "strong" --walltime_units "Seconds" --plot_width 10 --speedup_max 25 --filter "include"

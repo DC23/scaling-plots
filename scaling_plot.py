@@ -63,7 +63,7 @@ def get_args():
     parser.add_argument(
         "--weak",
         default=False,
-        help="Generate plots for weak scaling",
+        help="Generate plots for weak scaling instead of strong scaling",
         action="store_true")
     parser.add_argument(
         "--style",
@@ -365,7 +365,6 @@ if __name__ == '__main__':
     # get and process the arguments
     args = get_args()
 
-    print(matplotlib.style.available)
     # If we have a new enough version of matplotlib to support styles, use ggplot
     if args.style:
         try:
@@ -384,7 +383,8 @@ if __name__ == '__main__':
     speedup_title = add_optional_prefix('Speedup', args.title_prefix, ' - ')
 
     efficiency_title = add_optional_prefix(
-        'Weak Scaling Efficiency' if args.weak else 'Strong Scaling Efficiency',
+        # 'Weak Scaling Efficiency' if args.weak else 'Strong Scaling Efficiency',
+        'Efficiency',
         args.title_prefix,
         ' - ')
 
