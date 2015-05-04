@@ -59,6 +59,11 @@ def get_args():
         default=16.1,
         type=float,
         help="Max Y axis scale for speedup")
+    parser.add_argument(
+        "--weak",
+        default=False,
+        help="Generate plots for weak scaling",
+        action="store_true")
 
     return parser.parse_args()
 
@@ -140,16 +145,22 @@ def calculate_speedup_and_efficiency(
     compute_element_col_index: compute elements column name
     time_col_index: column name containing the computation times
 
-    Returns: a tuple containing the speedup and efficiency series
+    Returns: a tuple containing the speedup, strong scaling efficiency, and
+    weak scaling efficiency series
     """
     # get the t1 reference value
-    t1 = float(rdf[rdf[compute_element_col_index] == 1][time_col_index])
+    t1 = float(rdf.loc[rdf[compute_element_col_index] == 1][time_col_index])
+
     # speedup n = t1 / tn
     speedup = t1 / rdf[time_col_index]
-    # efficiency n = t1 / (tn * n)
-    efficiency = t1 / (rdf[time_col_index] * rdf[compute_element_col_index])
 
-    return (speedup, efficiency)
+    # strong scaling efficiency n = t1 / (tn * n)
+    strong_efficiency = t1 / (rdf[time_col_index] * rdf[compute_element_col_index])
+
+    # weak scaling efficiency n = t1 / tn
+    weak_efficiency = t1 / rdf[time_col_index]
+
+    return (speedup, strong_efficiency, weak_efficiency)
 
 
 def plot_walltime(
@@ -357,14 +368,18 @@ if __name__ == '__main__':
 
     walltime_title = add_optional_prefix('Walltime', args.title_prefix, ' - ')
     speedup_title = add_optional_prefix('Speedup', args.title_prefix, ' - ')
+
     efficiency_title = add_optional_prefix(
-        'Strong Scaling Efficiency',
+        'Weak Scaling Efficiency' if args.weak else 'Strong Scaling Efficiency',
         args.title_prefix,
         ' - ')
 
     walltime_file = add_optional_prefix('walltime', args.file_prefix, '-')
     speedup_file = add_optional_prefix('speedup', args.file_prefix, '-')
-    efficiency_file = add_optional_prefix('efficiency', args.file_prefix, '-')
+    efficiency_file = add_optional_prefix(
+        'weak-efficiency' if args.weak else 'strong-efficiency',
+        args.file_prefix,
+        '-')
 
     compute_element_name = args.compute_element_name
     walltime_units = args.walltime_units
@@ -415,29 +430,28 @@ if __name__ == '__main__':
                 'compute_elements',
                 ascending=True)
 
-    # calculate speedup and efficiency based on the total walltime, and on
-    # the average time per iteration (which excludes a lot of the serial
-    # code, and gives a closer look at just the model calculations)
+    # calculate speedup and efficiency
     for data in group_dataframes.values():
-        speedup, efficiency = calculate_speedup_and_efficiency(
-            data,
-            'compute_elements',
-            'walltime')
-        data['speedup'] = speedup
-        data['efficiency'] = efficiency
+        data['speedup'], data['strong_efficiency'], data['weak_efficiency'] = \
+            calculate_speedup_and_efficiency(
+                data,
+                'compute_elements',
+                'walltime')
 
     # extract the compute element names for grouping and labelling the charts
     compute_elements = np.sort(results.compute_elements.unique())
 
     # build the collections of values for the charts
     walltimes = []
-    efficiencies = []
+    strong_efficiencies = []
+    weak_efficiencies = []
     speedups = []
     series_names = []
     max_walltime = 0
     for name, data in group_dataframes.items():
         walltimes.append(data.walltime)
-        efficiencies.append(data.efficiency)
+        strong_efficiencies.append(data.strong_efficiency)
+        weak_efficiencies.append(data.weak_efficiency)
         speedups.append(data.speedup)
         series_names.append(name)
         local_max_walltime = max(data.walltime)
@@ -462,7 +476,7 @@ if __name__ == '__main__':
         file_extension='png')
 
     plot_efficiency(
-        efficiencies,
+        weak_efficiencies if args.weak else strong_efficiencies,
         colours,
         series_names,
         compute_elements,
@@ -476,17 +490,21 @@ if __name__ == '__main__':
         file_name=efficiency_file,
         file_extension='png')
 
-    plot_speedup(
-        speedups,
-        colours,
-        series_names,
-        compute_elements,
-        line_width=1.5,
-        xmax=compute_elements.max() * 1.05,
-        ymax=args.speedup_max,
-        plot_size=plot_size,
-        xlabel=compute_element_name,
-        title=speedup_title,
-        show=show_instead_of_save,
-        file_name=speedup_file,
-        file_extension='png')
+    # The Speedup plot makes no sense for weak scaling.
+    # I could create a new plot for weak scaling that shows the percentage
+    # increase in walltime as the compute elements increase
+    if not args.weak:
+        plot_speedup(
+            speedups,
+            colours,
+            series_names,
+            compute_elements,
+            line_width=1.5,
+            xmax=compute_elements.max() * 1.05,
+            ymax=args.speedup_max,
+            plot_size=plot_size,
+            xlabel=compute_element_name,
+            title=speedup_title,
+            show=show_instead_of_save,
+            file_name=speedup_file,
+            file_extension='png')
