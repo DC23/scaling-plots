@@ -3,6 +3,7 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import argparse
 
@@ -64,6 +65,11 @@ def get_args():
         default=False,
         help="Generate plots for weak scaling",
         action="store_true")
+    parser.add_argument(
+        "--style",
+        default="",
+        type=str,
+        help="If available, use one of the matplotlib predefined styles")
 
     return parser.parse_args()
 
@@ -358,6 +364,14 @@ if __name__ == '__main__':
 
     # get and process the arguments
     args = get_args()
+
+    print(matplotlib.style.available)
+    # If we have a new enough version of matplotlib to support styles, use ggplot
+    if args.style:
+        try:
+            matplotlib.style.use(args.style)
+        except:
+            pass
 
     # create plots in a 4:3 aspect ratio
     # matplotlib works in inches
