@@ -200,12 +200,13 @@ def plot_walltime(
     plot_left = x_ind[0] - group_width
     plot_right = x_ind[-1] + group_width
 
-    for bar_values, bar_colour in zip(series, colours):
+    for values, colour, name in zip(series, colours, series_names):
         ax.bar(
             bar_left,
-            bar_values,
+            values,
             width=bar_width,
-            color=bar_colour,
+            color=colour,
+            label=name,
             log=y_log_scale)
         bar_left += bar_width
 
@@ -217,8 +218,8 @@ def plot_walltime(
     ax.set_ylim(0, ymax)
     ax.set_xticks(x_ind)
     ax.set_xticklabels(compute_elements)
-    ax.legend(series_names)
-    # ax.legend().get_frame().set_facecolor('white')
+    ax.legend()
+    ax.get_legend().get_frame().set_facecolor('white')
 
     if show:
         plt.show()
@@ -280,8 +281,7 @@ def plot_speedup(
     ax.set_xticks(compute_elements)
     ax.set_xticklabels(compute_elements)
     ax.legend()
-    ax.legend().get_frame().set_facecolor('white')
-    # can also use get_frame().set_xy(x,y) to give a custom location
+    ax.get_legend().get_frame().set_facecolor('white')
 
     if show:
         plt.show()
@@ -344,8 +344,8 @@ def plot_efficiency(
     ax.set_title(title)
     ax.set_xticks(compute_elements)
     ax.set_xticklabels(compute_elements)
-    ax.legend(shadow=True)
-    ax.legend().get_frame().set_facecolor('white')
+    ax.legend()
+    ax.get_legend().get_frame().set_facecolor('white')
 
     if show:
         plt.show()
