@@ -176,6 +176,21 @@ def calculate_speedup_and_efficiency(
     return (speedup, strong_efficiency, weak_efficiency)
 
 
+def add_sorted_legend(ax, face_color=None):
+    """Adds a sorted legend to a plot axes.
+    Assumes that labels have been specified as data items are added to the plot
+
+    ax: The axes instance to which the legend will be added.
+    face_color: optional face color
+    """
+    handles, labels = ax.get_legend_handles_labels()
+    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+    ax.legend(handles, labels)
+
+    if face_color:
+        ax.get_legend().get_frame().set_facecolor(face_color)
+
+
 def plot_walltime(
         series,
         colours,
@@ -225,8 +240,8 @@ def plot_walltime(
     ax.set_ylim(0, ymax)
     ax.set_xticks(x_ind)
     ax.set_xticklabels(compute_elements)
-    ax.legend()
-    ax.get_legend().get_frame().set_facecolor('white')
+
+    add_sorted_legend(ax)
 
     if show:
         plt.show()
@@ -287,8 +302,8 @@ def plot_speedup(
     ax.set_title(title)
     ax.set_xticks(compute_elements)
     ax.set_xticklabels(compute_elements)
-    ax.legend()
-    ax.get_legend().get_frame().set_facecolor('white')
+
+    add_sorted_legend(ax)
 
     if show:
         plt.show()
@@ -351,8 +366,8 @@ def plot_efficiency(
     ax.set_title(title)
     ax.set_xticks(compute_elements)
     ax.set_xticklabels(compute_elements)
-    ax.legend()
-    ax.get_legend().get_frame().set_facecolor('white')
+
+    add_sorted_legend(ax)
 
     if show:
         plt.show()
