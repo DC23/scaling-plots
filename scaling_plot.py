@@ -35,7 +35,7 @@ def get_args():
         default='',
         type=str,
         help='''Optional filter column name. If given, the column contents will
-        be equated to a boolean value. Any result group with a member filter
+        be cast to a boolean value. Any result group with a member filter
         that equates to False will be excluded from the plot.''')
     parser.add_argument(
         '--title_prefix',
@@ -45,6 +45,13 @@ def get_args():
         '--file_prefix',
         type=str,
         help='optional prefix that will be prepended to the standard file names')
+    parser.add_argument(
+        '--file-extension',
+        type=str,
+        default='png',
+        help="""The file extension. This must be supported by the active
+        matplotlib backend (see matplotlib.backends module).  Most
+        backends support 'png', 'pdf', 'ps', 'eps', and 'svg'.""")
     parser.add_argument(
         '--window',
         default=False,
@@ -433,7 +440,7 @@ if __name__ == '__main__':
     # calculate the mean
     results = results.groupby(['group','compute_elements']).mean().reset_index()
 
-    # create new dataframes for each group of results
+    # create new dataframes for each group of results, sorted by the compute element
     groups = results.group.unique()
     group_dataframes = {}
     for group in groups:
@@ -486,7 +493,7 @@ if __name__ == '__main__':
         ylabel=walltime_units,
         show=show_instead_of_save,
         file_name=walltime_file,
-        file_extension='png')
+        file_extension=args.file_extension)
 
     plot_efficiency(
         weak_efficiencies if args.weak else strong_efficiencies,
@@ -501,7 +508,7 @@ if __name__ == '__main__':
         title=efficiency_title,
         show=show_instead_of_save,
         file_name=efficiency_file,
-        file_extension='png')
+        file_extension=args.file_extension)
 
     # The Speedup plot makes no sense for weak scaling.
     # I could create a new plot for weak scaling that shows the percentage
@@ -520,4 +527,4 @@ if __name__ == '__main__':
             title=speedup_title,
             show=show_instead_of_save,
             file_name=speedup_file,
-            file_extension='png')
+            file_extension=args.file_extension)
