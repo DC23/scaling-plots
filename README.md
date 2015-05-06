@@ -7,7 +7,9 @@ Many aspects of the plots can be controlled through the commmand line arguments.
 
 * Automatically produce speedup, efficiency (strong and weak), and walltime plots from timing data.
 * Multiple rows for the same group and number of compute elements are averaged.
-* Rows with missing data are excluded, however there is no support for mismatched numbers of compute elements.
+* Rows with missing data are excluded, however missing data handling is poor:
+    * no support for mismatched numbers of compute elements.
+    * groups missing a baseline 1 compute element entry are not handled gracefully.
 
 ## Tabular data requirements
 
