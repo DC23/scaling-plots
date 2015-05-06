@@ -1,0 +1,2 @@
+#!/bin/bash
+../scaling_plot.py results.xls --worksheet_name "missing" 
