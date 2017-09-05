@@ -461,8 +461,8 @@ if __name__ == '__main__':
     for group in groups:
         df = results[(results.group == group)]
         if len(df):
-            group_dataframes[group] = df.sort(
-                'compute_elements',
+            group_dataframes[group] = df.sort_values(
+                by='compute_elements',
                 ascending=True)
 
     # calculate speedup and efficiency
