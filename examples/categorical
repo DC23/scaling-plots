@@ -1,2 +1,2 @@
 #!/bin/bash
-../scaling_plot.py ./results.xls --title_prefix "Versions" --file_prefix "versions" --compute_element_name "threads" --worksheet_name "versions" --walltime_units "Seconds" --plot_width 10 --speedup_max 25 --filter "include"
+../scaling_plot_categorical.py ./results.xls --title_prefix "Versions" --file_prefix "versions" --worksheet_name "categorical" --walltime_units "Seconds" --plot_width 10 --filter "include" --category_column "version" --baseline_category "baseline"

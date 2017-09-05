@@ -7,6 +7,18 @@ import matplotlib
 import matplotlib.pyplot as plt
 import argparse
 
+# CSIRO colours
+COLOURS = [
+    '#00a9ce',  # midday blue
+    '#78be20',  # light forest
+    '#DF1995',  # fuschia
+    '#E87722',  # orange
+    '#E4002B',  # vermillion
+    '#00616c',  # midnight blue
+    '#FFB81C',  # gold
+    '#6D2077',  # plum
+    '#1E22AA',  # blueberry
+]
 
 def get_args():
     """Gets the command line arguments"""
@@ -419,18 +431,6 @@ if __name__ == '__main__':
     compute_element_name = args.compute_element_name
     walltime_units = args.walltime_units
 
-    # CSIRO colours
-    colours = [
-        '#00a9ce',  # midday blue
-        '#78be20',  # light forest
-        '#DF1995',  # fuschia
-        '#E87722',  # orange
-        '#E4002B',  # vermillion
-        '#00616c',  # midnight blue
-        '#FFB81C',  # gold
-        '#6D2077',  # plum
-        '#1E22AA',  # blueberry
-    ]
 
     usecols = [
         'group',
@@ -497,7 +497,7 @@ if __name__ == '__main__':
 
     plot_walltime(
         walltimes,
-        colours,
+        COLOURS,
         series_names,
         compute_elements,
         ymax=max_walltime * 1.2,
@@ -512,7 +512,7 @@ if __name__ == '__main__':
 
     plot_efficiency(
         weak_efficiencies if args.weak else strong_efficiencies,
-        colours,
+        COLOURS,
         series_names,
         compute_elements,
         line_width=1.5,
@@ -531,7 +531,7 @@ if __name__ == '__main__':
     if not args.weak:
         plot_speedup(
             speedups,
-            colours,
+            COLOURS,
             series_names,
             compute_elements,
             line_width=1.5,
