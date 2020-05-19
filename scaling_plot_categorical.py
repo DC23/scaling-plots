@@ -19,90 +19,96 @@ from scaling_plot import (
 def get_args():
     """Gets the command line arguments"""
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("results_file", help="The input results spreadsheet")
     parser.add_argument(
-        'results_file',
-        help='The input results spreadsheet')
-    parser.add_argument(
-        '--worksheet_name',
+        "--worksheet_name",
         type=str,
-        default='results',
-        help='Worksheet containing the results to plot')
+        default="results",
+        help="Worksheet containing the results to plot",
+    )
     parser.add_argument(
-        '--category_column',
+        "--category_column",
         type=str,
-        default='version',
-        help='Name of the spreadsheet column containing the category labels')
+        default="version",
+        help="Name of the spreadsheet column containing the category labels",
+    )
     parser.add_argument(
-        '--baseline_category',
+        "--baseline_category",
         type=str,
-        default='baseline',
-        help='The baseline category name. Plots are calculated relative to this category')
+        default="baseline",
+        help="The baseline category name. Plots are calculated relative to this category",
+    )
     parser.add_argument(
-        '--walltime_units',
-        default='Minutes',
-        type=str,
-        help='Walltime units name')
+        "--walltime_units", default="Minutes", type=str, help="Walltime units name"
+    )
     parser.add_argument(
-        '--filter_column',
-        default='',
+        "--filter_column",
+        default="",
         type=str,
-        help='''Optional filter column name. If given, the column contents will
+        help="""Optional filter column name. If given, the column contents will
         be cast to a boolean value. Any result group with a member filter
-        that equates to False will be excluded from the plot.''')
+        that equates to False will be excluded from the plot.""",
+    )
     parser.add_argument(
-        '--title_prefix',
+        "--title_prefix",
         type=str,
-        help='optional prefix that will be prepended to the standard plot titles')
+        help="optional prefix that will be prepended to the standard plot titles",
+    )
     parser.add_argument(
-        '--file_prefix',
+        "--file_prefix",
         type=str,
-        help='optional prefix that will be prepended to the standard file names')
+        help="optional prefix that will be prepended to the standard file names",
+    )
     parser.add_argument(
-        '--file-extension',
+        "--file-extension",
         type=str,
-        default='png',
+        default="png",
         help="""The file extension. This must be supported by the activename 
         matplotlib backend (see matplotlib.backends module).  Most
-        backends support 'png', 'pdf', 'ps', 'eps', and 'svg'.""")
+        backends support 'png', 'pdf', 'ps', 'eps', and 'svg'.""",
+    )
     parser.add_argument(
-        '--window',
+        "--window",
         default=False,
-        help='prints plots to a window instead of to files',
-        action='store_true')
+        help="prints plots to a window instead of to files",
+        action="store_true",
+    )
     parser.add_argument(
-        '--plot_width',
-        default=10,
-        type=int,
-        help='Plot width in inches')
+        "--plot_width", default=10, type=int, help="Plot width in inches"
+    )
     parser.add_argument(
-        '--style',
-        default='',
+        "--style",
+        default="",
         type=str,
-        help='If available, use one of the matplotlib predefined styles')
+        help="If available, use one of the matplotlib predefined styles",
+    )
     parser.add_argument(
-        '--log_scale',
+        "--log_scale",
         default=False,
-        action='store_true',
-        help='If true, a log scale is used on the Y axis')
+        action="store_true",
+        help="If true, a log scale is used on the Y axis",
+    )
 
     return parser.parse_args()
 
 
 def plot_bar(
-        series,
-        colours,
-        series_names,
-        ymax,
-        plot_size=None,
-        bar_width=0.8,
-        xlabel='Category',
-        ylabel='Minutes',
-        title='Walltime',
-        file_name='walltime',
-        file_extension='png',
-        y_log_scale=False,
-        show=False):
+    series,
+    colours,
+    series_names,
+    ymax,
+    plot_size=None,
+    bar_width=0.8,
+    xlabel="Category",
+    ylabel="Minutes",
+    title="Walltime",
+    file_name="walltime",
+    file_extension="png",
+    y_log_scale=False,
+    show=False,
+):
     """creates a bar plot as a new pyplot figure"""
 
     # the x locations for the bars
@@ -117,12 +123,8 @@ def plot_bar(
 
     for index, walltime, colour, name in zip(x_ind, series, colours, series_names):
         ax.bar(
-            index,
-            walltime,
-            width=bar_width,
-            color=colour,
-            label=name,
-            log=y_log_scale)
+            index, walltime, width=bar_width, color=colour, label=name, log=y_log_scale
+        )
 
     # apply the labels and formatting
     ax.set_xlabel(xlabel)
@@ -141,7 +143,7 @@ def plot_bar(
         save(file_name, file_extension, close=True, verbose=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # get and process the arguments
     args = get_args()
@@ -160,22 +162,21 @@ if __name__ == '__main__':
 
     show_instead_of_save = args.window
 
-    walltime_title = add_optional_prefix('Walltime', args.title_prefix, ' - ')
-    speedup_title = add_optional_prefix('Speedup', args.title_prefix, ' - ')
+    walltime_title = add_optional_prefix("Walltime", args.title_prefix, " - ")
+    speedup_title = add_optional_prefix("Speedup", args.title_prefix, " - ")
 
-    walltime_file = add_optional_prefix('walltime', args.file_prefix, '-')
-    speedup_file = add_optional_prefix('speedup', args.file_prefix, '-')
+    walltime_file = add_optional_prefix("walltime", args.file_prefix, "-")
+    speedup_file = add_optional_prefix("speedup", args.file_prefix, "-")
 
     walltime_units = args.walltime_units
 
-    usecols = [args.category_column, 'walltime']
+    usecols = [args.category_column, "walltime"]
     if args.filter_column:
         usecols.append(args.filter_column)
 
     results = read_dataframe_from_excel(
-        args.results_file,
-        worksheet=args.worksheet_name,
-        usecols=usecols)
+        args.results_file, worksheet=args.worksheet_name, usecols=usecols
+    )
 
     # filter out incomplete results
     results = results[results[args.category_column].notnull() & (results.walltime > 0)]
@@ -188,8 +189,10 @@ if __name__ == '__main__':
     results = results.groupby([args.category_column]).mean().reset_index()
 
     # calculate speedup
-    t1 = float(results.loc[results[args.category_column] == args.baseline_category]['walltime'])
-    results['speedup'] = t1 / results['walltime']
+    t1 = float(
+        results.loc[results[args.category_column] == args.baseline_category]["walltime"]
+    )
+    results["speedup"] = t1 / results["walltime"]
 
     # Category names as a list
     # TODO: sort list so that the baseline value is always first
@@ -198,7 +201,7 @@ if __name__ == '__main__':
     # finally make the plots
     # walltime plot
     plot_bar(
-        series=results['walltime'],
+        series=results["walltime"],
         colours=COLOURS,
         series_names=categories,
         ymax=results.walltime.max() * 1.2,
@@ -209,11 +212,12 @@ if __name__ == '__main__':
         ylabel=walltime_units,
         show=show_instead_of_save,
         file_name=walltime_file,
-        file_extension=args.file_extension)
+        file_extension=args.file_extension,
+    )
 
     # speedup plot
     plot_bar(
-        series=results['speedup'],
+        series=results["speedup"],
         colours=COLOURS,
         series_names=categories,
         ymax=results.speedup.max() * 1.2,
@@ -221,7 +225,8 @@ if __name__ == '__main__':
         plot_size=plot_size,
         title=speedup_title,
         xlabel=args.category_column,
-        ylabel='Speedup',
+        ylabel="Speedup",
         show=show_instead_of_save,
         file_name=speedup_file,
-        file_extension=args.file_extension)
+        file_extension=args.file_extension,
+    )

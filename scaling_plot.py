@@ -9,91 +9,94 @@ import argparse
 
 # CSIRO colours
 COLOURS = [
-    '#00a9ce',  # midday blue
-    '#78be20',  # light forest
-    '#DF1995',  # fuschia
-    '#E87722',  # orange
-    '#E4002B',  # vermillion
-    '#00616c',  # midnight blue
-    '#FFB81C',  # gold
-    '#6D2077',  # plum
-    '#1E22AA',  # blueberry
+    "#00a9ce",  # midday blue
+    "#78be20",  # light forest
+    "#DF1995",  # fuschia
+    "#E87722",  # orange
+    "#E4002B",  # vermillion
+    "#00616c",  # midnight blue
+    "#FFB81C",  # gold
+    "#6D2077",  # plum
+    "#1E22AA",  # blueberry
 ]
+
 
 def get_args():
     """Gets the command line arguments"""
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("results_file", help="The input results spreadsheet")
     parser.add_argument(
-        'results_file',
-        help='The input results spreadsheet')
-    parser.add_argument(
-        '--worksheet_name',
+        "--worksheet_name",
         type=str,
-        default='results',
-        help='Worksheet containing the results to plot')
+        default="results",
+        help="Worksheet containing the results to plot",
+    )
     parser.add_argument(
-        '--compute_element_name',
+        "--compute_element_name",
         type=str,
-        default='Threads',
-        help='Compute element name that will be used on plot labels')
+        default="Threads",
+        help="Compute element name that will be used on plot labels",
+    )
     parser.add_argument(
-        '--walltime_units',
-        default='Minutes',
-        type=str,
-        help='Walltime units name')
+        "--walltime_units", default="Minutes", type=str, help="Walltime units name"
+    )
     parser.add_argument(
-        '--filter_column',
-        default='',
+        "--filter_column",
+        default="",
         type=str,
-        help='''Optional filter column name. If given, the column contents will
+        help="""Optional filter column name. If given, the column contents will
         be cast to a boolean value. Any result group with a member filter
-        that equates to False will be excluded from the plot.''')
+        that equates to False will be excluded from the plot.""",
+    )
     parser.add_argument(
-        '--title_prefix',
+        "--title_prefix",
         type=str,
-        help='optional prefix that will be prepended to the standard plot titles')
+        help="optional prefix that will be prepended to the standard plot titles",
+    )
     parser.add_argument(
-        '--file_prefix',
+        "--file_prefix",
         type=str,
-        help='optional prefix that will be prepended to the standard file names')
+        help="optional prefix that will be prepended to the standard file names",
+    )
     parser.add_argument(
-        '--file-extension',
+        "--file-extension",
         type=str,
-        default='png',
+        default="png",
         help="""The file extension. This must be supported by the active
         matplotlib backend (see matplotlib.backends module).  Most
-        backends support 'png', 'pdf', 'ps', 'eps', and 'svg'.""")
+        backends support 'png', 'pdf', 'ps', 'eps', and 'svg'.""",
+    )
     parser.add_argument(
-        '--window',
+        "--window",
         default=False,
-        help='prints plots to a window instead of to files',
-        action='store_true')
+        help="prints plots to a window instead of to files",
+        action="store_true",
+    )
     parser.add_argument(
-        '--plot_width',
-        default=10,
-        type=int,
-        help='Plot width in inches')
+        "--plot_width", default=10, type=int, help="Plot width in inches"
+    )
     parser.add_argument(
-        '--speedup_max',
-        default=16.1,
-        type=float,
-        help='Max Y axis scale for speedup')
+        "--speedup_max", default=16.1, type=float, help="Max Y axis scale for speedup"
+    )
     parser.add_argument(
-        '--weak',
+        "--weak",
         default=False,
-        help='Generate plots for weak scaling instead of strong scaling',
-        action='store_true')
+        help="Generate plots for weak scaling instead of strong scaling",
+        action="store_true",
+    )
     parser.add_argument(
-        '--style',
-        default='',
+        "--style",
+        default="",
         type=str,
-        help='If available, use one of the matplotlib predefined styles')
+        help="If available, use one of the matplotlib predefined styles",
+    )
 
     return parser.parse_args()
 
 
-def save(path, ext='png', close=True, verbose=True):
+def save(path, ext="png", close=True, verbose=True):
     """Save a figure from pyplot.
 
     Parameters
@@ -122,8 +125,8 @@ def save(path, ext='png', close=True, verbose=True):
     # Extract the directory and filename from the given path
     directory = os.path.split(path)[0]
     filename = "%s.%s" % (os.path.split(path)[1], ext)
-    if directory == '':
-        directory = '.'
+    if directory == "":
+        directory = "."
 
     # If the directory does not exist, create it
     if not os.path.exists(directory):
@@ -146,10 +149,7 @@ def save(path, ext='png', close=True, verbose=True):
         print("Done")
 
 
-def read_dataframe_from_excel(
-        filename,
-        worksheet,
-        **kwargs):
+def read_dataframe_from_excel(filename, worksheet, **kwargs):
     """Reads a pandas dataframe from an Excel file
     filename: the excel file
     worksheet: worksheet name within the excel file
@@ -159,10 +159,7 @@ def read_dataframe_from_excel(
     return results
 
 
-def calculate_speedup_and_efficiency(
-        rdf,
-        compute_element_col_index,
-        time_col_index):
+def calculate_speedup_and_efficiency(rdf, compute_element_col_index, time_col_index):
     """Calculates the speedup and efficiency and
     adds them as new columns to a dataframe
 
@@ -204,20 +201,21 @@ def add_sorted_legend(ax, face_color=None):
 
 
 def plot_walltime(
-        series,
-        colours,
-        series_names,
-        compute_elements,
-        ymax,
-        plot_size=None,
-        group_width=0.8,
-        xlabel='Processes',
-        ylabel='Minutes',
-        title='Walltime',
-        file_name='walltime',
-        file_extension='png',
-        y_log_scale=False,
-        show=False):
+    series,
+    colours,
+    series_names,
+    compute_elements,
+    ymax,
+    plot_size=None,
+    group_width=0.8,
+    xlabel="Processes",
+    ylabel="Minutes",
+    title="Walltime",
+    file_name="walltime",
+    file_extension="png",
+    y_log_scale=False,
+    show=False,
+):
     """creates a bar plot as a new pyplot figure"""
 
     # the x locations for the groups.
@@ -236,12 +234,8 @@ def plot_walltime(
 
     for values, colour, name in zip(series, colours, series_names):
         ax.bar(
-            bar_left,
-            values,
-            width=bar_width,
-            color=colour,
-            label=name,
-            log=y_log_scale)
+            bar_left, values, width=bar_width, color=colour, label=name, log=y_log_scale
+        )
         bar_left += bar_width
 
     # apply the labels and formatting
@@ -262,20 +256,21 @@ def plot_walltime(
 
 
 def plot_speedup(
-        series,
-        colours,
-        series_names,
-        compute_elements,
-        xmax,
-        ymax,
-        line_width=1,
-        plot_size=None,
-        xlabel='Processes',
-        ylabel='Speedup',
-        title='Speedup',
-        file_name='speedup',
-        file_extension='png',
-        show=False):
+    series,
+    colours,
+    series_names,
+    compute_elements,
+    xmax,
+    ymax,
+    line_width=1,
+    plot_size=None,
+    xlabel="Processes",
+    ylabel="Speedup",
+    title="Speedup",
+    file_name="speedup",
+    file_extension="png",
+    show=False,
+):
     """creates a speedup plot"""
 
     # create the figure and axes
@@ -291,12 +286,7 @@ def plot_speedup(
     ax.set_ylim(plot_left, ymax)
 
     # create the ideal speedup reference line
-    ax.plot(
-        x_ticks,
-        x_ticks,
-        color='red',
-        linewidth=line_width,
-        label='_nolegend_')
+    ax.plot(x_ticks, x_ticks, color="red", linewidth=line_width, label="_nolegend_")
 
     # plot each series
     for values, colour, name in zip(series, colours, series_names):
@@ -306,7 +296,8 @@ def plot_speedup(
             label=name,
             color=colour,
             linewidth=line_width,
-            marker='o')
+            marker="o",
+        )
 
     # apply the labels and formatting
     ax.set_xlabel(xlabel)
@@ -324,20 +315,21 @@ def plot_speedup(
 
 
 def plot_efficiency(
-        series,
-        colours,
-        series_names,
-        compute_elements,
-        xmax,
-        ymax=1.2,
-        line_width=1,
-        plot_size=None,
-        xlabel='Processes',
-        ylabel='Efficiency',
-        title='Efficiency',
-        file_name='efficiency',
-        file_extension='png',
-        show=False):
+    series,
+    colours,
+    series_names,
+    compute_elements,
+    xmax,
+    ymax=1.2,
+    line_width=1,
+    plot_size=None,
+    xlabel="Processes",
+    ylabel="Efficiency",
+    title="Efficiency",
+    file_name="efficiency",
+    file_extension="png",
+    show=False,
+):
     """creates an efficiency plot"""
 
     # create the figure and axes
@@ -357,10 +349,11 @@ def plot_efficiency(
         1,
         plot_left,
         plot_right,
-        colors='red',
-        linestyles='solid',
+        colors="red",
+        linestyles="solid",
         linewidth=line_width,
-        label='_nolegend_')
+        label="_nolegend_",
+    )
 
     # plot each series
     for values, colour, name in zip(series, colours, series_names):
@@ -370,7 +363,8 @@ def plot_efficiency(
             label=name,
             color=colour,
             linewidth=line_width,
-            marker='o')
+            marker="o",
+        )
 
     # apply the labels and formatting
     ax.set_xlabel(xlabel)
@@ -394,7 +388,7 @@ def add_optional_prefix(base_string, prefix, separator):
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # get and process the arguments
     args = get_args()
@@ -403,7 +397,11 @@ if __name__ == '__main__':
         try:
             matplotlib.style.use(args.style)
         except OSError:
-            print("Warning: '{0}' is not a valid matplotlib style. Using default style.".format(args.style))
+            print(
+                "Warning: '{0}' is not a valid matplotlib style. Using default style.".format(
+                    args.style
+                )
+            )
 
     # create plots in a 4:3 aspect ratio
     # matplotlib works in inches
@@ -412,36 +410,27 @@ if __name__ == '__main__':
 
     show_instead_of_save = args.window
 
-    walltime_title = add_optional_prefix('Walltime', args.title_prefix, ' - ')
-    speedup_title = add_optional_prefix('Speedup', args.title_prefix, ' - ')
+    walltime_title = add_optional_prefix("Walltime", args.title_prefix, " - ")
+    speedup_title = add_optional_prefix("Speedup", args.title_prefix, " - ")
 
-    efficiency_title = add_optional_prefix(
-        'Efficiency',
-        args.title_prefix,
-        ' - ')
+    efficiency_title = add_optional_prefix("Efficiency", args.title_prefix, " - ")
 
-    walltime_file = add_optional_prefix('walltime', args.file_prefix, '-')
-    speedup_file = add_optional_prefix('speedup', args.file_prefix, '-')
+    walltime_file = add_optional_prefix("walltime", args.file_prefix, "-")
+    speedup_file = add_optional_prefix("speedup", args.file_prefix, "-")
     efficiency_file = add_optional_prefix(
-        'weak-efficiency' if args.weak else 'strong-efficiency',
-        args.file_prefix,
-        '-')
+        "weak-efficiency" if args.weak else "strong-efficiency", args.file_prefix, "-"
+    )
 
     compute_element_name = args.compute_element_name
     walltime_units = args.walltime_units
 
-
-    usecols = [
-        'group',
-        'compute_elements',
-        'walltime']
+    usecols = ["group", "compute_elements", "walltime"]
     if args.filter_column:
         usecols.append(args.filter_column)
 
     results = read_dataframe_from_excel(
-        args.results_file,
-        worksheet=args.worksheet_name,
-        usecols=usecols)
+        args.results_file, worksheet=args.worksheet_name, usecols=usecols
+    )
 
     # filter out incomplete results
     results = results[results.group.notnull() & (results.walltime > 0)]
@@ -452,7 +441,7 @@ if __name__ == '__main__':
 
     # if there are multiple times for each (group,compute_element) tuple,
     # calculate the mean
-    results = results.groupby(['group','compute_elements']).mean().reset_index()
+    results = results.groupby(["group", "compute_elements"]).mean().reset_index()
 
     # create new dataframes for each group of results, sorted by the compute element
     groups = results.group.unique()
@@ -461,16 +450,16 @@ if __name__ == '__main__':
         df = results[(results.group == group)]
         if len(df):
             group_dataframes[group] = df.sort_values(
-                by='compute_elements',
-                ascending=True)
+                by="compute_elements", ascending=True
+            )
 
     # calculate speedup and efficiency
     for data in group_dataframes.values():
-        data['speedup'], data['strong_efficiency'], data['weak_efficiency'] = \
-            calculate_speedup_and_efficiency(
-                data,
-                'compute_elements',
-                'walltime')
+        (
+            data["speedup"],
+            data["strong_efficiency"],
+            data["weak_efficiency"],
+        ) = calculate_speedup_and_efficiency(data, "compute_elements", "walltime")
 
     # extract the compute element names for grouping and labelling the charts
     compute_elements = np.sort(results.compute_elements.unique())
@@ -506,7 +495,8 @@ if __name__ == '__main__':
         ylabel=walltime_units,
         show=show_instead_of_save,
         file_name=walltime_file,
-        file_extension=args.file_extension)
+        file_extension=args.file_extension,
+    )
 
     plot_efficiency(
         weak_efficiencies if args.weak else strong_efficiencies,
@@ -521,7 +511,8 @@ if __name__ == '__main__':
         title=efficiency_title,
         show=show_instead_of_save,
         file_name=efficiency_file,
-        file_extension=args.file_extension)
+        file_extension=args.file_extension,
+    )
 
     # The Speedup plot makes no sense for weak scaling.
     # I could create a new plot for weak scaling that shows the percentage
@@ -540,4 +531,5 @@ if __name__ == '__main__':
             title=speedup_title,
             show=show_instead_of_save,
             file_name=speedup_file,
-            file_extension=args.file_extension)
+            file_extension=args.file_extension,
+        )
