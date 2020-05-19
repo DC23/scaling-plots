@@ -92,6 +92,12 @@ def get_args():
         type=str,
         help="If available, use one of the matplotlib predefined styles",
     )
+    parser.add_argument(
+        "--tight",
+        default=False,
+        help="Apply the matplotlib tight_layout for smaller margins than the default.",
+        action="store_true",
+    )
 
     return parser.parse_args()
 
@@ -252,6 +258,8 @@ def plot_walltime(
     if show:
         plt.show()
     else:
+        if args.tight:
+            plt.tight_layout()
         save(file_name, file_extension, close=True, verbose=True)
 
 
@@ -311,6 +319,8 @@ def plot_speedup(
     if show:
         plt.show()
     else:
+        if args.tight:
+            plt.tight_layout()
         save(file_name, file_extension, close=True, verbose=True)
 
 
@@ -378,6 +388,8 @@ def plot_efficiency(
     if show:
         plt.show()
     else:
+        if args.tight:
+            plt.tight_layout()
         save(file_name, file_extension, close=True, verbose=True)
 
 
@@ -482,6 +494,7 @@ if __name__ == "__main__":
             max_walltime = local_max_walltime
 
     # finally make the plots
+
     plot_walltime(
         walltimes,
         COLOURS,

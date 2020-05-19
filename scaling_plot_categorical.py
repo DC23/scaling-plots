@@ -90,6 +90,12 @@ def get_args():
         action="store_true",
         help="If true, a log scale is used on the Y axis",
     )
+    parser.add_argument(
+        "--tight",
+        default=False,
+        help="Apply the matplotlib tight_layout for smaller margins than the default.",
+        action="store_true",
+    )
 
     return parser.parse_args()
 
@@ -140,6 +146,8 @@ def plot_bar(
     if show:
         plt.show()
     else:
+        if args.tight:
+            plt.tight_layout()
         save(file_name, file_extension, close=True, verbose=True)
 
 
