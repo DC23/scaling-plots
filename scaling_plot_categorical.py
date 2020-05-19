@@ -148,12 +148,15 @@ if __name__ == "__main__":
     # get and process the arguments
     args = get_args()
 
-    # If we have a new enough version of matplotlib to support styles, use ggplot
     if args.style:
         try:
             matplotlib.style.use(args.style)
-        except:
-            pass
+        except OSError:
+            print(
+                "Warning: '{0}' is not a valid matplotlib style. Using default style.".format(
+                    args.style
+                )
+            )
 
     # create plots in a 4:3 aspect ratio
     # matplotlib works in inches
